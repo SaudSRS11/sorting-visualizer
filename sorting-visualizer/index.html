@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sorting Algorithm Visualizer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/components.css">
+</head>
+<body class="min-h-screen bg-gray-950 text-gray-100">
+  <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <header class="mb-8">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-400">Interactive Learning Tool</p>
+          <h1 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Sorting Algorithm Visualizer</h1>
+          <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
+            Watch sorting algorithms compare, move, partition, and organize values in real time.
+          </p>
+        </div>
+        <div class="rounded-xl border border-gray-800 bg-gray-900 px-4 py-3">
+          <div class="text-xs uppercase tracking-wider text-gray-500">Active algorithm</div>
+          <div id="algorithmLabel" class="mt-1 text-sm font-semibold text-indigo-400">Bubble Sort</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="mb-6 rounded-2xl border border-gray-800 bg-gray-900 p-5 shadow-xl">
+      <div class="grid gap-5 lg:grid-cols-4">
+        <label class="block">
+          <span class="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">Algorithm</span>
+          <select id="algorithm" class="control w-full rounded-xl border border-gray-700 bg-gray-950 px-3 py-2.5 text-sm text-gray-200 outline-none focus:border-indigo-500">
+            <option value="bubble">Bubble Sort</option>
+            <option value="selection">Selection Sort</option>
+            <option value="insertion">Insertion Sort</option>
+            <option value="merge">Merge Sort</option>
+            <option value="quick">Quick Sort</option>
+          </select>
+        </label>
+
+        <label class="block">
+          <div class="mb-2 flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Array size</span>
+            <span id="arraySizeValue" class="font-mono text-xs text-indigo-400">30</span>
+          </div>
+          <input id="arraySize" class="w-full accent-indigo-500" type="range" min="10" max="100" value="30" step="1">
+        </label>
+
+        <label class="block">
+          <div class="mb-2 flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Speed</span>
+            <span id="speedValue" class="text-xs text-indigo-400">Medium</span>
+          </div>
+          <input id="speed" class="w-full accent-indigo-500" type="range" min="1" max="100" value="50" step="1">
+        </label>
+
+        <div class="flex items-end gap-3">
+          <button id="generateBtn" class="control-button flex-1 rounded-xl bg-gray-800 px-4 py-2.5 text-sm font-semibold text-gray-200 transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50">
+            Generate
+          </button>
+          <button id="sortBtn" class="control-button flex-1 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50">
+            Sort
+          </button>
+          <button id="stopBtn" class="control-button flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50" disabled>
+            Stop
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="mb-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span id="statusDot" class="h-2.5 w-2.5 rounded-full bg-indigo-500"></span>
+        <span id="status" class="text-sm text-gray-400">Ready</span>
+      </div>
+      <span id="arrayLength" class="text-xs text-gray-500">30 values</span>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+      <section id="chart" class="flex min-h-[420px] items-end gap-1 overflow-hidden rounded-2xl border border-gray-800 bg-gray-900 p-4 shadow-xl sm:p-6" aria-label="Sorting visualization"></section>
+
+      <aside class="flex flex-col rounded-2xl border border-gray-800 bg-gray-900 p-5 shadow-xl">
+        <div class="mb-5">
+          <h2 class="text-lg font-semibold text-white">What's happening?</h2>
+          <p id="algorithmDescription" class="mt-1 text-sm leading-6 text-gray-400">
+            Choose an algorithm to see how it works.
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-gray-800 bg-gray-950 p-4">
+          <div class="mb-2 flex items-center gap-2">
+            <span class="h-2 w-2 rounded-full bg-indigo-500"></span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Current step</span>
+          </div>
+          <p id="stepExplanation" class="text-sm font-medium leading-6 text-gray-200" aria-live="polite">
+            Ready to sort.
+          </p>
+        </div>
+
+        <div class="mt-4">
+          <h3 class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">Complexity</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-xl border border-gray-800 bg-gray-950 p-3">
+              <span class="block text-xs text-gray-500">Time</span>
+              <span id="timeComplexity" class="mt-1 block font-mono text-sm font-semibold text-indigo-400">O(n²)</span>
+            </div>
+            <div class="rounded-xl border border-gray-800 bg-gray-950 p-3">
+              <span class="block text-xs text-gray-500">Space</span>
+              <span id="spaceComplexity" class="mt-1 block font-mono text-sm font-semibold text-indigo-400">O(1)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <h3 class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">Visual guide</h3>
+          <div class="space-y-2 text-xs text-gray-400">
+            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-sm bg-yellow-400"></span>Comparing</div>
+            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-sm bg-red-500"></span>Swapping / moving</div>
+            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-sm bg-purple-500"></span>Pivot / key</div>
+            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-sm bg-green-500"></span>Sorted</div>
+          </div>
+        </div>
+
+        <div class="mt-auto pt-6">
+          <div class="flex items-center justify-between text-xs text-gray-500">
+            <span>Operations</span>
+            <span id="operationCount">0</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="mt-6 text-center text-xs text-gray-600">
+      Built with vanilla JavaScript modules and Tailwind CSS.
+    </footer>
+  </div>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
